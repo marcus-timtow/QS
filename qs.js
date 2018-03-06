@@ -18,7 +18,7 @@
             return that[dep.split("/").pop()];
         }));
     }
-})("QS", ["./utils"], function (utils) {
+})("QS", ["../utils/utils"], function (utils) {
     
     
     /**
