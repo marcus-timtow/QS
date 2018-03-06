@@ -1,0 +1,19 @@
+{
+  "name": "QS",
+  "version": "1.0.0",
+  "main": "qs.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/marcus-timtow/QS.git"
+  },
+  "dependencies": {
+    "utils": "git://github.com/marcus-timtow/utils.git"
+  },
+  "keywords": ["querystring", "qs"],
+  "author": "Marcus Timtow",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/marcus-timtow/QS/issues"
+  },
+  "homepage": "https://github.com/marcus-timtow/QS"
+}
