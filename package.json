@@ -1,13 +1,14 @@
 {
   "name": "QS",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "main": "qs.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/marcus-timtow/QS.git"
   },
   "dependencies": {
-    "utils": "git://github.com/marcus-timtow/utils.git"
+    "utils": "git://github.com/marcus-timtow/utils.git",
+    "parser": "git://github.com/marcus-timtow/parser.git"
   },
   "keywords": ["querystring", "qs"],
   "author": "Marcus Timtow",
