@@ -18,9 +18,9 @@
             return that[dep.split("/").pop()];
         }));
     }
-})("QS", ["../utils/utils"], function (utils) {
-    
-    
+})("QS", ["../utils/utils", "../parser/parser"], function (utils, parser) {
+
+
     /**
      * A QueryString stringifier/parser from/to QSO (QueryString Object).
      * 
@@ -36,37 +36,23 @@
      */
     var QS = {};
 
-
-    /**
-     * Stringifies a QSO.
-     * 
-     * This routine doesn't check the validity of the QSO target, passing an invalid 
-     * target will return an unexpected result.
-     * 
-     * @param {QSO} target
-     * @param {string} [prefix]
-     * @param {boolean} _flag
-     * @returns {String} A query string
-     * 
-     * @throws {Error} target must be a QSO
-     */
-    QS.stringify = function (target, prefix, _flag) {
+    let stringify = function (target, prefix, _flag) {
         if (typeof target === "object") {
             if (Array.isArray(target)) {
                 if (_flag) {
-                    throw new Error("target must be a QSO");
+                    throw new Error("target must be a querystring-able StringObject");
                 }
                 return target.map(function (el) {
-                    return QS.stringify(el, prefix, true);
+                    return stringify(el, prefix, true);
                 }).join("&");
             } else {
                 if (_flag) {
-                    throw new Error("target must be a QSO");
+                    throw new Error("target must be a querystring-able StringObject");
                 }
                 var str = "";
                 prefix = prefix ? (prefix + ".") : "";
                 for (var prop in target) {
-                    var sprop = QS.stringify(target[prop], prefix + prop, _flag);
+                    var sprop = stringify(target[prop], prefix + prop, _flag);
                     str += "&" + sprop;
                 }
                 return str.substr(1);
@@ -74,24 +60,58 @@
         } else if (typeof target === "string") {
             target = encodeURIComponent(target);
             return prefix ? (encodeURIComponent(prefix) + "=" + target) : ("" + target);
+        } else if (typeof target === "undefined") {
+            return target;
         } else {
-            throw new Error("target must be a QSO");
+            throw new Error("target must be a querystring-able StringObject");
         }
     };
 
 
     /**
-     * Parses a query string to a QSO.
+     * Stringifies a javascript entity to a querystring.
+     *  
+     * @param {*} target
+     * @param {string} [prefix]
+     * @param {boolean} [strict=false]
+     * @returns {String} A query string
+     * 
+     * @throws {Error} target must be a QSO
+     */
+    QS.stringify = function (target, prefix, strict) {
+        if (typeof prefix === "boolean") {
+            strict = prefix;
+            prefix = undefined;
+        }
+        target = parser.stringifyToSO(target, strict);
+        return stringify(target, prefix);
+    };
+
+
+
+
+
+
+    /**
+     * Parses a query string to a querystring-able StringObject (a StringObject 
+     * without objects and arrays embedded into other arrays).
+     * 
+     * Note: When a querystring containing arrays is parsed, a simple string cill be 
+     * parsed if the array contains a single element. For instance the query string
+     * `arr=el-1` will be parsed as `{arr: "el-1"}` instead of `{arr: ["el-1"]}`.
      * 
      * @requires utils.rget(), utils.rset()
      * 
      * @param {string} qs
-     * @returns {QSO}
+     * @returns {SO}
      * 
      * @throws {Error} invalid querystring
      */
     QS.parse = function (qs) {
-        if (qs.startsWith("?")){
+        if (qs === undefined){
+            return qs;
+        }
+        if (qs.startsWith("?")) {
             qs = qs.substr(1);
         }
         var parts = qs.split("&");
