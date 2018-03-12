@@ -1,6 +1,6 @@
 
 let QS = require("./qs");
-let parser = require("./parser");
+let parser = require("../parser/parser");
 
 let qss = [
     "true",
@@ -35,7 +35,7 @@ qss.forEach(function (qs) {
     console.log(QS.parse(qs));
 });
 tests.forEach(function (test) {
-    console.log(QS.stringify(parser.stringifyToQSO(test)));
+    console.log(QS.stringify(parser.stringifyToSO(test)));
 });
 
 
